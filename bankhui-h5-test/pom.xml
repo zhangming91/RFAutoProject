@@ -1,0 +1,244 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.bankhui.h5.test</groupId>
+	<artifactId>bankhui-h5-test</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>bankhui-h5-test</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.bankhui</groupId>
+			<artifactId>bankhui-tools</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.18</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>4.1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.2.8</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		
+	</dependencies>
+	
+	<dependencyManagement>
+			<dependencies>
+				<dependency>
+					<!-- Import dependency management from Spring Boot -->
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-dependencies</artifactId>
+					<version>1.4.0.RELEASE</version>
+					<type>pom</type>
+					<scope>import</scope>
+				</dependency>
+			</dependencies>
+		</dependencyManagement>
+		
+	<!-- Package as an executable JAR -->
+	<build>
+		<outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>bankhui-h5-test</warName>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>1.4.0.RELEASE</version>
+				<configuration>
+					<mainClass>com.bankhui.Application</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<useSystemClassLoader>false</useSystemClassLoader>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
+		<repository>
+			<id>nexus</id>
+			<name>Sonatype Repository</name>
+			<url>http://10.10.11.5:8081/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- tomcat端口号 -->
+				<server.port>10021</server.port>
+				<!-- 数据库地址 -->
+				<mysql.url>10.10.11.248:3306/bankhui_test</mysql.url>
+				<!-- 数据库账号 -->
+				<mysql.username>baoli</mysql.username>
+				<!-- 数据库账号密码 -->
+				<mysql.password>DB_shouchuang_810</mysql.password>
+
+				<!-- 日志名称 -->
+				<log.name>bankhui-h5-test</log.name>
+				<!-- 日志路径 -->
+				<log.path>/logs/test/log</log.path>
+				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+				<log.level>DEBUG</log.level>
+				<!-- redis地址 -->
+				<redis.host>10.10.11.248</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6380</redis.port>
+				<!-- redis密码 -->
+				<redis.password>123456</redis.password>
+				<platform.type>dev</platform.type>
+				
+				<!-- 默认火狐浏览器 -->
+				<sys.browser>FireFox</sys.browser>
+				<!-- 默认测试地址 -->
+				<test.path>http://235.m.baihui.con/</test.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>predeployed</id>
+			<properties>
+				<!-- tomcat端口号 -->
+				<server.port>10021</server.port>
+				<!-- 数据库地址 -->
+				<mysql.url>10.10.11.248:3306/bankhui_test</mysql.url>
+				<!-- 数据库账号 -->
+				<mysql.username>baoli</mysql.username>
+				<!-- 数据库账号密码 -->
+				<mysql.password>DB_shouchuang_810</mysql.password>
+
+				<!-- 日志名称 -->
+				<log.name>bankhui-h5-test</log.name>
+				<!-- 日志路径 -->
+				<log.path>/logs/test/log</log.path>
+				<!-- 日志级别，一般由大到小分为 debug info warn error 四个级别，越大日志越详细 -->
+				<log.level>INFO</log.level>
+
+				<!-- redis地址 -->
+				<redis.host>47.94.160.90</redis.host>
+				<!-- redis端口 -->
+				<redis.port>6379</redis.port>
+				<!-- redis密码 -->
+				<redis.password>123qwe!@#</redis.password>
+				
+				<!-- 默认火狐浏览器 -->
+				<sys.browser>FireFox</sys.browser>
+				<!-- 默认测试地址 -->
+				<test.path>https://h5.bankhui.com/</test.path>
+			</properties>
+		</profile>
+	</profiles>
+</project>
